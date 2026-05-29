@@ -1,8 +1,8 @@
 package model;
 
 public class Seat {
-    private String seatId;      
-    private boolean isReserved; 
+    private String seatId;
+    private boolean isReserved;
 
     public Seat(String seatId) {
         this.seatId = seatId;
@@ -12,15 +12,15 @@ public class Seat {
     public String getSeatId() { return seatId; }
     public boolean isReserved() { return isReserved; }
 
-    public synchronized boolean reserve() {
+    public boolean reserve() {
         if (this.isReserved) {
-            return false; 
+            return false;
         }
         this.isReserved = true;
         return true;
     }
 
-    public synchronized void cancel() {
+    public void cancel() {
         this.isReserved = false;
     }
 }
