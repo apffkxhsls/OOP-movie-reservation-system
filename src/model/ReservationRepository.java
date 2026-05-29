@@ -23,8 +23,8 @@ public class ReservationRepository {
     }
 
     public ArrayList<Reservation> getAllReservations() {
-        return reservations;
-    }
+    return new ArrayList<>(reservations);
+}
 
     public void saveToFile() {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_PATH))) {
