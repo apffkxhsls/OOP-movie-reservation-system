@@ -4,7 +4,7 @@ import model.Seat;
 
 public abstract class Theater {
     private String name;      
-    protected Seat[][] seats;  
+    private Seat[][] seats;
 
     public Theater(String name, int rows, int cols) {
         this.name = name;
