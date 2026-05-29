@@ -17,7 +17,7 @@ public class ReservationRepository {
         loadFromFile();
     }
 
-    public synchronized void addReservation(Reservation r) {
+    public void addReservation(Reservation r) {
         this.reservations.add(r);
         saveToFile();
     }
@@ -29,7 +29,6 @@ public class ReservationRepository {
     public void saveToFile() {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_PATH))) {
             for (Reservation r : reservations) {
-                // 좌석 ID들을 "/"로 구분해서 저장 (예: C4/C5)
                 StringBuilder seatIds = new StringBuilder();
                 for (int i = 0; i < r.getSeats().size(); i++) {
                     if (i > 0) seatIds.append("/");
@@ -68,7 +67,6 @@ public class ReservationRepository {
                     String seatData = data[5];
                     String status   = data[6];
 
-                    // 좌석 복원: "C4/C5" → Seat 리스트
                     ArrayList<Seat> seats = new ArrayList<>();
                     if (!seatData.isEmpty()) {
                         for (String seatId : seatData.split("/")) {
