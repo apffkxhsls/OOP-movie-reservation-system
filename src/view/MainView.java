@@ -2,6 +2,7 @@ package view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -44,33 +45,72 @@ public class MainView extends JFrame {
         topPanel.add(searchPanel, BorderLayout.EAST);
         contentPanel.add(topPanel, BorderLayout.NORTH);
         
+        // 영화 목록 전체 영역
+        JPanel bodyPanel = new JPanel(new BorderLayout());
+        bodyPanel.setBorder(BorderFactory.createEmptyBorder(30, 60, 30, 60));
+
+        // 섹션 제목
+        JLabel sectionTitle = new JLabel("현재 상영 중");
+        sectionTitle.setFont(new Font("SansSerif", Font.BOLD, 20));
+        sectionTitle.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
+        bodyPanel.add(sectionTitle, BorderLayout.NORTH);
+
         // 영화 목록을 담는 패널
-        JPanel moviePanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 25, 30));
-        moviePanel.setBorder(BorderFactory.createEmptyBorder(30, 60, 30, 40));
+        JPanel moviePanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 25, 0));
 
         // 영화 카드 생성
         for (Movie movie : DummyData.getMovies()) {
             JPanel card = new JPanel(new BorderLayout());
-            card.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-            card.setPreferredSize(new Dimension(220, 280));
+            card.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+            card.setPreferredSize(new Dimension(220, 300));
+            card.setBackground(Color.WHITE);
 
             // 포스터 영역
             JLabel poster = new JLabel("POSTER", SwingConstants.CENTER);
             poster.setOpaque(true);
             poster.setBackground(Color.LIGHT_GRAY);
             poster.setPreferredSize(new Dimension(180, 150));
-            card.add(poster, BorderLayout.CENTER);
+            card.add(poster, BorderLayout.NORTH);
 
-            // 영화 제목
+            // 영화 정보 영역
+            JPanel infoPanel = new JPanel();
+            infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
+            infoPanel.setBackground(Color.WHITE);
+
             JLabel title = new JLabel(movie.getTitle(), SwingConstants.CENTER);
             title.setFont(new Font("SansSerif", Font.BOLD, 14));
-            card.add(title, BorderLayout.SOUTH);
+            title.setAlignmentX(CENTER_ALIGNMENT);
 
+            JLabel info = new JLabel(
+                "<html><center>"
+                + movie.getGenre() + " / " + movie.getDurationMinutes() + "분<br>"
+                + "관람등급: " + movie.getAgeRating()
+                + "</center></html>",
+                SwingConstants.CENTER
+            );
+            info.setFont(new Font("SansSerif", Font.PLAIN, 12));
+            info.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+            infoPanel.add(Box.createVerticalStrut(12));
+            infoPanel.add(title);
+            infoPanel.add(Box.createVerticalStrut(8));
+            infoPanel.add(info);
+            infoPanel.add(Box.createVerticalGlue());
+
+            card.add(infoPanel, BorderLayout.CENTER);
+
+            // 예매 버튼
+            JButton bookButton = new JButton("예매하기");
+            bookButton.setBackground(new Color(0x2B, 0x35, 0x58));
+            bookButton.setForeground(Color.WHITE);
+            bookButton.setFocusPainted(false);
+            card.add(bookButton, BorderLayout.SOUTH);
+            
             moviePanel.add(card);
         }
 
-        contentPanel.add(moviePanel, BorderLayout.CENTER);
+        bodyPanel.add(moviePanel, BorderLayout.CENTER);
+        contentPanel.add(bodyPanel, BorderLayout.CENTER);
         add(contentPanel, BorderLayout.CENTER);
     }
-
 }

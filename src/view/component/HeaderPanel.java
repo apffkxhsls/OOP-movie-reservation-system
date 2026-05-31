@@ -19,7 +19,7 @@ public class HeaderPanel extends JPanel {
         setBackground(NAVY);
         setPreferredSize(new Dimension(0, 64));
         setLayout(new BorderLayout());
-        setBorder(BorderFactory.createEmptyBorder(0, 24, 0, 24));
+        setBorder(BorderFactory.createEmptyBorder(12, 24, 0, 24));
 
         JLabel logo = new JLabel("SongBox");
         logo.setFont(LOGO_FONT);
@@ -32,7 +32,8 @@ public class HeaderPanel extends JPanel {
             rightButton.setBackground(BTN_BG);
             rightButton.setForeground(BTN_FG);
             rightButton.setFocusPainted(false);
-            rightButton.setBorder(BorderFactory.createEmptyBorder(8, 18, 8, 18));
+            rightButton.setPreferredSize(new Dimension(130, 40));
+            rightButton.setBorder(BorderFactory.createEmptyBorder(6, 16, 6, 16));
             rightButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             JPanel wrap = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
             wrap.setOpaque(false);
