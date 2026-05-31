@@ -5,9 +5,8 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 
 // 모든 화면 공통 상단 헤더
-// rightButtonText가 null이면 우측 버튼 미표시.
+// rightButtonText가 null이면 우측 버튼 미표시
 public class HeaderPanel extends JPanel {
-
     public static final Color NAVY      = new Color(0x2B, 0x35, 0x58);
     public static final Color BTN_BG    = new Color(0xFF, 0xFF, 0xFF);
     public static final Color BTN_FG    = new Color(0x2B, 0x35, 0x58);
@@ -27,7 +26,7 @@ public class HeaderPanel extends JPanel {
         logo.setForeground(Color.WHITE);
         add(logo, BorderLayout.WEST);
 
-        if (rightButtonText != null) {
+        if (rightButtonText != null && !rightButtonText.isBlank()) {
             rightButton = new JButton(rightButtonText);
             rightButton.setFont(BTN_FONT);
             rightButton.setBackground(BTN_BG);
