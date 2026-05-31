@@ -3,7 +3,9 @@ package view;
 import java.awt.BorderLayout;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 
+import view.component.BreadCrumbPanel;
 import view.component.HeaderPanel;
 
 public class MainView extends JFrame {
@@ -16,6 +18,9 @@ public class MainView extends JFrame {
 
         HeaderPanel header = new HeaderPanel("예매내역 조회");
         add(header, BorderLayout.NORTH);
+
+        BreadCrumbPanel breadCrumb = new BreadCrumbPanel(0);
+        add(breadCrumb, BorderLayout.CENTER);
     }
 
 }
