@@ -1,5 +1,7 @@
 import model.DummyData;
 import model.ReservationRepository;
+import view.MainView;
+import javax.swing.SwingUtilities;
 
 public class Main {
     public static void main(String[] args) {
@@ -15,6 +17,12 @@ public class Main {
         DummyData.getTheaters().forEach(t ->
             System.out.println(t.getName())
         );
+
+        // UI 실행 
+        SwingUtilities.invokeLater(() -> {
+            MainView mainView = new MainView();
+            mainView.setVisible(true);
+        });
 
         // TODO: MainController 완성 후 아래처럼 교체
         // MainController controller = new MainController(repository);
