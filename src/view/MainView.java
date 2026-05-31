@@ -7,7 +7,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 
 import model.DummyData;
 import model.Movie;
@@ -28,9 +27,22 @@ public class MainView extends JFrame {
         // 헤더 아래에 들어갈 전체 영역
         JPanel contentPanel = new JPanel(new BorderLayout());
 
-        // 현재 화면 위치 표시
+        // 브레드크럼 + 검색창 영역
+        JPanel topPanel = new JPanel(new BorderLayout());
+        
         BreadCrumbPanel breadCrumb = new BreadCrumbPanel(0);
-        contentPanel.add(breadCrumb, BorderLayout.NORTH);
+        topPanel.add(breadCrumb, BorderLayout.CENTER);
+
+        // 검색창
+        JTextField searchField = new JTextField("영화 검색....", 14);
+        searchField.setForeground(Color.GRAY);
+
+        JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 6));
+        searchPanel.setBackground(new Color(0xF4, 0xF4, 0xF6));
+        searchPanel.add(searchField);
+
+        topPanel.add(searchPanel, BorderLayout.EAST);
+        contentPanel.add(topPanel, BorderLayout.NORTH);
         
         // 영화 목록을 담는 패널
         JPanel moviePanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 25, 30));
