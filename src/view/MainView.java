@@ -13,8 +13,11 @@ import model.DummyData;
 import model.Movie;
 import view.component.HeaderPanel;
 import view.component.BreadCrumbPanel;
+import view.listener.MainViewListener;
 
 public class MainView extends JFrame {
+
+    private MainViewListener listener;
     
     public MainView() {
         setTitle("Main");
@@ -23,6 +26,11 @@ public class MainView extends JFrame {
         setLocationRelativeTo(null);
 
         HeaderPanel header = new HeaderPanel("예매내역 조회");
+        header.addRightButtonListener(e -> {
+            if (listener != null) {
+                listener.onHistoryButtonClicked();
+            }
+        });
         add(header, BorderLayout.NORTH);
 
         // 헤더 아래에 들어갈 전체 영역
@@ -104,6 +112,11 @@ public class MainView extends JFrame {
             bookButton.setBackground(new Color(0x2B, 0x35, 0x58));
             bookButton.setForeground(Color.WHITE);
             bookButton.setFocusPainted(false);
+            bookButton.addActionListener(e -> {
+                if (listener != null) {
+                    listener.onMovieSelected(movie);
+                }
+            });
             card.add(bookButton, BorderLayout.SOUTH);
             
             moviePanel.add(card);
@@ -112,5 +125,9 @@ public class MainView extends JFrame {
         bodyPanel.add(moviePanel, BorderLayout.CENTER);
         contentPanel.add(bodyPanel, BorderLayout.CENTER);
         add(contentPanel, BorderLayout.CENTER);
+    }
+
+    public void setListener(MainViewListener listener) {
+        this.listener = listener;
     }
 }
