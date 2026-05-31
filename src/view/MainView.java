@@ -12,6 +12,7 @@ import javax.swing.border.Border;
 import model.DummyData;
 import model.Movie;
 import view.component.HeaderPanel;
+import view.component.BreadCrumbPanel;
 
 public class MainView extends JFrame {
     
@@ -23,6 +24,13 @@ public class MainView extends JFrame {
 
         HeaderPanel header = new HeaderPanel("예매내역 조회");
         add(header, BorderLayout.NORTH);
+
+        // 헤더 아래에 들어갈 전체 영역
+        JPanel contentPanel = new JPanel(new BorderLayout());
+
+        // 현재 화면 위치 표시
+        BreadCrumbPanel breadCrumb = new BreadCrumbPanel(0);
+        contentPanel.add(breadCrumb, BorderLayout.NORTH);
         
         // 영화 목록을 담는 패널
         JPanel moviePanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 25, 30));
@@ -48,8 +56,9 @@ public class MainView extends JFrame {
 
             moviePanel.add(card);
         }
-        
-        add(moviePanel, BorderLayout.CENTER);
+
+        contentPanel.add(moviePanel, BorderLayout.CENTER);
+        add(contentPanel, BorderLayout.CENTER);
     }
 
 }
