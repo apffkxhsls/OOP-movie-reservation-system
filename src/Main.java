@@ -18,7 +18,7 @@ public class Main {
             System.out.println(t.getName())
         );
 
-        // UI 실행 
+        // 메인 화면 실행 
         SwingUtilities.invokeLater(() -> {
             MainView mainView = new MainView();
             mainView.setVisible(true);
