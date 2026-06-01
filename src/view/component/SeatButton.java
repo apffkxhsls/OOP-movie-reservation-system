@@ -38,12 +38,24 @@ public class SeatButton extends JButton {
         });
     }
 
-    private void setState(State s) {
+    public void setState(State s) {
         this.state = s;
         switch (s) {
-            case AVAILABLE -> { setBackground((C_AVAILABLE)); setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); setEnabled(true); }
-            case RESERVED -> { setBackground(C_RESERVED); setCursor(Cursor.getDefaultCursor()); setEnabled(false);}
-            case SELECTED -> { setBackground(C_SELECTED); setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); setEnabled(true);}
+            case AVAILABLE -> { 
+                setBackground((C_AVAILABLE)); 
+                setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); 
+                setEnabled(true); 
+            }
+            case RESERVED -> { 
+                setBackground(C_RESERVED); 
+                setCursor(Cursor.getDefaultCursor()); 
+                setEnabled(false);
+            }
+            case SELECTED -> {
+                setBackground(C_SELECTED); 
+                setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); 
+                setEnabled(true);
+            }
         }
         repaint();
     }
