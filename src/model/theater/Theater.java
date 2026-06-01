@@ -24,12 +24,12 @@ public abstract class Theater {
     public String getName() { return name; }
     public Seat[][] getSeats() { return seats; }
 
-    // 상영관 좌석 행 수 반환
+    // 상영관 좌석 행 수 반환 (추가)
     public int getRows() {
         return seats.length;
     }
     
-    // 상영관 좌석 열 수 반환
+    // 상영관 좌석 열 수 반환 (추가)
     public int getCols() { 
         return seats[0].length;
     }
