@@ -268,8 +268,10 @@ public class SeatView extends JFrame {
             priceLabel.setText("금액: 0원");
             return;
         }
-
-        int totalPrice = selectedSeats.size() * showInfo.getMovie().getBasePrice();
+        
+        // 가격 계산을 Theater 객체에 위임
+        int basePrice = showInfo.getMovie().getBasePrice();
+        int totalPrice = selectedSeats.size() * showInfo.getTheater().calculatePrice(basePrice);
 
         selectedSeatLabel.setText("선택 좌석: " + String.join(", ", selectedSeats));
         priceLabel.setText("금액: " + String.format("%,d원", totalPrice));

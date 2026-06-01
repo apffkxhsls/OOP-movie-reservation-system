@@ -1,6 +1,5 @@
 package view.component;
 
-import javax.print.attribute.standard.MediaSize.NA;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
