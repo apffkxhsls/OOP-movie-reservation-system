@@ -39,4 +39,8 @@ public class BreadCrumbPanel extends JPanel {
             }
         }
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> c1cc2c1d24d87f29906ad274be79dd772d4062e5

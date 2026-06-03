@@ -100,7 +100,3 @@ public class ReservationController {
         //일단 현재 시간을 숫자로 반환하는 java기본메소드. 
     }
 }
-
-
-
-
