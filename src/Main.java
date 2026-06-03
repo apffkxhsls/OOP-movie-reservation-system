@@ -1,8 +1,14 @@
 import model.DummyData;
+import model.Reservation;
 import model.ReservationRepository;
+import model.Seat;
 import model.ShowInfo;
+import view.BookingConfirmView;
 import view.MainView;
 import view.SeatView;
+
+import java.util.ArrayList;
+
 import javax.swing.SwingUtilities;
 
 public class Main {
@@ -32,6 +38,28 @@ public class Main {
 
             SeatView seatView = new SeatView(showInfo);
             seatView.setVisible(true);
+        });
+
+        // BookingConfirmView 화면 실행
+        ArrayList<ShowInfo> showInfos = DummyData.getShowInfos();
+        ShowInfo showInfo = showInfos.get(0);
+
+        ArrayList<Seat> seats = new ArrayList<>();
+        seats.add(new Seat("C4"));
+        seats.add(new Seat("C5"));
+
+        Reservation reservation = new Reservation(
+        "R001",
+        showInfo,
+        seats,
+        28000,
+        2000
+        );
+
+        SwingUtilities.invokeLater(() -> {
+            BookingConfirmView view = new BookingConfirmView();
+            view.setReservation(reservation); 
+            view.setVisible(true);
         });
 
         // TODO: MainController 완성 후 아래처럼 교체
