@@ -1,4 +1,4 @@
-package controller1; // [스타일 가이드] 메인 컨트롤러와 동일한 소문자 패키지명을 사용합니다.
+package controller1;
 
 import java.util.ArrayList;
 import java.util.List;
