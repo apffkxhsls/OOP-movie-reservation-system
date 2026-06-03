@@ -1,4 +1,4 @@
-package Controller2;
+package controller2;
 
 import model.Reservation;
 import model.ReservationRepository;
