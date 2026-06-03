@@ -1,6 +1,5 @@
 package controller1;
 
-import java.util.List;
 import model.Movie;
 import model.ShowInfo;
 import model.DummyData;
