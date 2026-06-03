@@ -51,4 +51,9 @@ public class DummyData {
 
         return showInfos;
     }
+
+    public static ArrayList<Movie> getReservations() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getReservations'");
+    }
 }

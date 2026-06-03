@@ -4,6 +4,7 @@ import model.ReservationRepository;
 import model.Seat;
 import model.ShowInfo;
 import view.BookingConfirmView;
+import view.BookingHistoryView;
 import view.MainView;
 import view.SeatView;
 
@@ -26,44 +27,67 @@ public class Main {
             System.out.println(t.getName())
         );
 
-        // MainView 화면 실행 (Controller 연결 전) 
-        SwingUtilities.invokeLater(() -> {
-            MainView mainView = new MainView();
-            mainView.setVisible(true);
-        });
-
-        // SeatView 화면 실행 (Controller 연결 전)
-        SwingUtilities.invokeLater(() -> {
-            ShowInfo showInfo = DummyData.getShowInfos().get(0);
-
-            SeatView seatView = new SeatView(showInfo);
-            seatView.setVisible(true);
-        });
-
-        // BookingConfirmView 화면 실행
-        ArrayList<ShowInfo> showInfos = DummyData.getShowInfos();
-        ShowInfo showInfo = showInfos.get(0);
+        ShowInfo showInfo = DummyData.getShowInfos().get(0);
 
         ArrayList<Seat> seats = new ArrayList<>();
         seats.add(new Seat("C4"));
         seats.add(new Seat("C5"));
 
-        Reservation reservation = new Reservation(
-        "R001",
-        showInfo,
-        seats,
-        28000,
-        2000
-        );
-
+        Reservation reservation = new Reservation("R001", showInfo, seats, 28000, 2000);
+        // MainView 실행
         SwingUtilities.invokeLater(() -> {
-            BookingConfirmView view = new BookingConfirmView();
-            view.setReservation(reservation); 
-            view.setVisible(true);
+            try {
+                MainView mainView = new MainView();
+                mainView.setVisible(true);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         });
+        // SeatView 실행
+        SwingUtilities.invokeLater(() -> {
+            try {
+                SeatView seatView = new SeatView(showInfo);
+                seatView.setVisible(true);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        // BookingConfirm 실행
+        SwingUtilities.invokeLater(() -> {
+            try {
+                BookingConfirmView view = new BookingConfirmView();
+                view.setReservation(reservation);
+                view.setVisible(true);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
+        // BookingHistory 실행
+        SwingUtilities.invokeLater(() -> {
+            BookingHistoryView bookingHistoryView = new BookingHistoryView();
+
+            bookingHistoryView.setLocation(500, 80);
+            bookingHistoryView.setAlwaysOnTop(true);
+            bookingHistoryView.setVisible(true);
+
+            ArrayList<Reservation> reservations = new ArrayList<>();
+            reservations.add(reservation);
+
+            bookingHistoryView.setReservations(reservations);
+            bookingHistoryView.revalidate();
+            bookingHistoryView.repaint();
+
+            bookingHistoryView.toFront();
+            bookingHistoryView.requestFocus();
+
+            SwingUtilities.invokeLater(() -> {
+                bookingHistoryView.setAlwaysOnTop(false);
+            });
+        });
+    }
 
         // TODO: MainController 완성 후 아래처럼 교체
         // MainController controller = new MainController(repository);
         // controller.start();
     }
-}

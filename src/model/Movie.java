@@ -20,4 +20,9 @@ public class Movie {
     public int getBasePrice() { return basePrice; }
     public int getDurationMinutes() { return durationMinutes; }
     public String getAgeRating() { return ageRating; }
+
+    public String getRunningTime() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getRunningTime'");
+    }
 }
