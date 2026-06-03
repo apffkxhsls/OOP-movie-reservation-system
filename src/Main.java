@@ -27,6 +27,7 @@ public class Main {
             System.out.println(t.getName())
         );
 
+        // Controller 연결 후 아래 더미데이터 및 각 View 직접 실행 코드 제거
         ShowInfo showInfo = DummyData.getShowInfos().get(0);
 
         ArrayList<Seat> seats = new ArrayList<>();
@@ -35,7 +36,7 @@ public class Main {
 
         Reservation reservation = new Reservation("R001", showInfo, seats, 28000, 2000);
         
-        // MainView 실행
+        // MainView 실행 (Controller 연결 전)
         SwingUtilities.invokeLater(() -> {
             try {
                 MainView mainView = new MainView();
@@ -45,7 +46,7 @@ public class Main {
             }
         });
 
-        // SeatView 실행
+        // SeatView 실행 (Controller 연결 전)
         SwingUtilities.invokeLater(() -> {
             try {
                 SeatView seatView = new SeatView(showInfo);
@@ -55,7 +56,7 @@ public class Main {
             }
         });
 
-        // BookingConfirm 실행
+        // BookingConfirm 실행 (Controller 연결 전)
         SwingUtilities.invokeLater(() -> {
             try {
                 BookingConfirmView view = new BookingConfirmView();
@@ -66,7 +67,7 @@ public class Main {
             }
         });
 
-        // BookingHistory 실행
+        // BookingHistory 실행 (Controller 연결 전)
         SwingUtilities.invokeLater(() -> {
             try {
                 ArrayList<Reservation> reservations = repository.getAllReservations();

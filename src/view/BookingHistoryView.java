@@ -14,11 +14,11 @@ import java.util.ArrayList;
 public class BookingHistoryView extends JFrame {
     private BookingHistoryViewListener listener;
 
-    private static final Color NAVY = new Color(43, 53, 88);
+    private static final Color NAVY       = new Color(43, 53, 88);
     private static final Color BACKGROUND = new Color(234, 235, 239);
-    private static final Color WHITE = Color.WHITE;
-    private static final Color TEXT = new Color(40, 40, 40);
-    private static final Color TEXT_GRAY = new Color(100, 100, 100);
+    private static final Color WHITE      = Color.WHITE;
+    private static final Color TEXT       = new Color(40, 40, 40);
+    private static final Color TEXT_GRAY  = new Color(100, 100, 100);
     private static final Color STATUS_GRAY = new Color(130, 136, 155);
 
     private JPanel tableBodyPanel;
@@ -37,19 +37,23 @@ public class BookingHistoryView extends JFrame {
             e.printStackTrace();
         }
 
+        // UI 구성 완료 후 데이터 세팅
         if (reservations != null) {
             setReservations(reservations);
         }
     }
 
+    // Listener 등록
     public void setBookingHistoryViewListener(BookingHistoryViewListener listener) {
         this.listener = listener;
     }
 
+    // 전체 레이아웃    
     private JPanel createContentPanel() {
         JPanel contentPanel = new JPanel(new BorderLayout());
         contentPanel.setBackground(BACKGROUND);
 
+        // 브레드크럼 
         contentPanel.add(new BreadCrumbPanel(3), BorderLayout.NORTH);
 
         JPanel bodyPanel = new JPanel();
@@ -57,17 +61,21 @@ public class BookingHistoryView extends JFrame {
         bodyPanel.setLayout(new BoxLayout(bodyPanel, BoxLayout.Y_AXIS));
         bodyPanel.setBorder(BorderFactory.createEmptyBorder(28, 50, 28, 50));
 
+        // 타이틀
         JLabel titleLabel = new JLabel("예매 내역 조회");
         titleLabel.setFont(new Font("맑은 고딕", Font.BOLD, 24));
         titleLabel.setForeground(TEXT);
         titleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
+        // 필터 버튼 (전체 / 예매완료 / 취소)
         JPanel filterPanel = createFilterPanel();
         filterPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
+        // 예매 내역 테이블
         JPanel tablePanel = createTablePanel();
         tablePanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
+        // 하단 이전으로 버튼
         JButton backButton = createButton("이전으로", WHITE, NAVY, 110, 38);
         backButton.addActionListener(e -> {
             if (listener != null) listener.onBack();
@@ -90,24 +98,27 @@ public class BookingHistoryView extends JFrame {
         return contentPanel;
     }
 
+    // 필터 패널 (전체 / 예매완료 / 취소)
     private JPanel createFilterPanel() {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 12, 0));
         panel.setBackground(BACKGROUND);
         panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 36));
 
-        panel.add(createButton("전체", NAVY, WHITE, 80, 32));
-        panel.add(createButton("예매완료", WHITE, NAVY, 90, 32));
-        panel.add(createButton("취소", WHITE, NAVY, 80, 32));
+        panel.add(createButton("전체",    NAVY,  WHITE, 80, 32));
+        panel.add(createButton("예매완료", WHITE, NAVY,  90, 32));
+        panel.add(createButton("취소",    WHITE, NAVY,  80, 32));
 
         return panel;
     }
 
+    // 테이블 패널 (헤더 + 바디)
     private JPanel createTablePanel() {
         JPanel tablePanel = new JPanel(new BorderLayout());
         tablePanel.setBackground(WHITE);
         tablePanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 420));
         tablePanel.setPreferredSize(new Dimension(940, 420));
 
+        // 테이블 헤더
         JPanel headerPanel = new JPanel(new GridLayout(1, 5));
         headerPanel.setBackground(NAVY);
         headerPanel.setPreferredSize(new Dimension(940, 58));
@@ -117,16 +128,18 @@ public class BookingHistoryView extends JFrame {
         headerPanel.add(createHeaderLabel("결제 금액"));
         headerPanel.add(createHeaderLabel("상태"));
 
+        // 테이블 바디 (동적으로 행 추가)
         tableBodyPanel = new JPanel();
         tableBodyPanel.setBackground(WHITE);
         tableBodyPanel.setLayout(new BoxLayout(tableBodyPanel, BoxLayout.Y_AXIS));
 
-        tablePanel.add(headerPanel, BorderLayout.NORTH);
+        tablePanel.add(headerPanel,    BorderLayout.NORTH);
         tablePanel.add(tableBodyPanel, BorderLayout.CENTER);
 
         return tablePanel;
     }
 
+    // 데이터 세팅 (외부에서 호출)
     public void setReservations(ArrayList<Reservation> reservations) {
         if (tableBodyPanel == null) return;
         tableBodyPanel.removeAll();
@@ -143,20 +156,22 @@ public class BookingHistoryView extends JFrame {
         tableBodyPanel.repaint();
     }
 
+    // 데이터 없을 때 표시
     private JPanel createEmptyPanel() {
-        JPanel panel = new JPanel(new BorderLayout());
+        JPanel panel = new JPanel(new GridBagLayout()); 
         panel.setBackground(WHITE);
-        panel.setPreferredSize(new Dimension(940, 100));
-        panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
+        panel.setPreferredSize(new Dimension(940, 362)); // 테이블 바디 높이에 맞춤
+        panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 362));
 
         JLabel label = new JLabel("예매 내역이 없습니다.", SwingConstants.CENTER);
         label.setFont(new Font("맑은 고딕", Font.BOLD, 15));
         label.setForeground(TEXT_GRAY);
 
-        panel.add(label, BorderLayout.CENTER);
+        panel.add(label); 
         return panel;
     }
 
+    // 예매 1건 행 생성
     private JPanel createReservationRow(Reservation reservation) {
         JPanel row = new JPanel(new GridLayout(1, 5));
         row.setBackground(WHITE);
@@ -164,8 +179,8 @@ public class BookingHistoryView extends JFrame {
         row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 78));
 
         String movieText = "-";
-        String timeText = "-";
-        String seatText = "-";
+        String timeText  = "-";
+        String seatText  = "-";
         String priceText = "-";
 
         if (reservation != null) {
@@ -178,16 +193,14 @@ public class BookingHistoryView extends JFrame {
                             + showInfo.getMovie().getRunningTime() + "분</html>";
                 }
 
-                String theaterName = "-";
-                if (showInfo.getTheater() != null) {
-                    theaterName = showInfo.getTheater().getName();
-                }
+                String theaterName = (showInfo.getTheater() != null)
+                        ? showInfo.getTheater().getName() : "-";
 
                 timeText = "<html>" + formatDate(showInfo.getTime()) + "<br>"
                         + formatTime(showInfo.getTime()) + " / " + theaterName + "</html>";
             }
 
-            seatText = getSeatText(reservation.getSeats());
+            seatText  = getSeatText(reservation.getSeats());
             priceText = String.format("%,d원", reservation.getFinalPrice());
         }
 
@@ -195,11 +208,13 @@ public class BookingHistoryView extends JFrame {
         row.add(createBodyLabel(timeText));
         row.add(createBodyLabel(seatText));
         row.add(createBodyLabel(priceText));
-        row.add(createStatusPanel("예매 완료"));
+        // 상태는 reservation에서 가져옴 
+        row.add(createStatusPanel(reservation != null ? reservation.getStatus() : "-"));
 
         return row;
     }
-
+    
+    // UI 컴포넌트
     private JLabel createHeaderLabel(String text) {
         JLabel label = new JLabel(text, SwingConstants.CENTER);
         label.setFont(new Font("맑은 고딕", Font.BOLD, 16));
@@ -240,6 +255,20 @@ public class BookingHistoryView extends JFrame {
         return button;
     }
 
+    // 날짜/시간 
+    private String formatDate(String time) {
+        if (time == null || time.length() < 10) return "-";
+        return time.substring(0, 10);
+    }
+
+    private String formatTime(String time) {
+        if (time == null) return "-";
+        int idx = time.lastIndexOf(" ");
+        if (idx < 0 || idx + 5 > time.length()) return "-";
+        return time.substring(idx + 1);
+    }
+
+    // 좌석 목록 텍스트 변환
     private String getSeatText(ArrayList<Seat> seats) {
         if (seats == null || seats.isEmpty()) return "-";
         StringBuilder sb = new StringBuilder();
@@ -248,17 +277,5 @@ public class BookingHistoryView extends JFrame {
             sb.append(seats.get(i).getSeatId());
         }
         return sb.toString();
-    }
-
-    private String formatDate(String time) {
-        if (time == null || time.length() < 10) return "-";
-        return time.substring(2, 10);
-    }
-
-    private String formatTime(String time) {
-        if (time == null) return "-";
-        int idx = time.lastIndexOf(" ");
-        if (idx < 0 || idx + 5 > time.length()) return "-";
-        return time.substring(idx + 1);
     }
 }
