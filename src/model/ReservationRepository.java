@@ -23,26 +23,25 @@ public class ReservationRepository {
     }
 
     public ArrayList<Reservation> getAllReservations() {
-        return new ArrayList<>(reservations);
-    }
+    return new ArrayList<>(reservations);
+}
 
     public void saveToFile() {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_PATH))) {
             for (Reservation r : reservations) {
                 StringBuilder seatIds = new StringBuilder();
                 for (int i = 0; i < r.getSeats().size(); i++) {
-                    if (i > 0)
-                        seatIds.append("/");
+                    if (i > 0) seatIds.append("/");
                     seatIds.append(r.getSeats().get(i).getSeatId());
                 }
 
                 bw.write(r.getReservationNumber() + "," +
-                        r.getShowInfo().getMovie().getTitle() + "," +
-                        r.getShowInfo().getTime() + "," +
-                        r.getTotalPrice() + "," +
-                        r.getBookingFee() + "," +
-                        seatIds + "," +
-                        r.getStatus());
+                         r.getShowInfo().getMovie().getTitle() + "," +
+                         r.getShowInfo().getTime() + "," +
+                         r.getTotalPrice() + "," +
+                         r.getBookingFee() + "," +
+                         seatIds + "," +
+                         r.getStatus());
                 bw.newLine();
             }
         } catch (IOException e) {
@@ -52,8 +51,7 @@ public class ReservationRepository {
 
     public void loadFromFile() {
         File file = new File(FILE_PATH);
-        if (!file.exists())
-            return;
+        if (!file.exists()) return;
 
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
@@ -61,13 +59,13 @@ public class ReservationRepository {
                 String[] data = line.split(",");
 
                 if (data.length == 7) {
-                    String resNum = data[0];
+                    String resNum   = data[0];
                     String movieTitle = data[1];
-                    String time = data[2];
-                    int price = Integer.parseInt(data[3]);
-                    int fee = Integer.parseInt(data[4]);
+                    String time     = data[2];
+                    int price       = Integer.parseInt(data[3]);
+                    int fee         = Integer.parseInt(data[4]);
                     String seatData = data[5];
-                    String status = data[6];
+                    String status   = data[6];
 
                     ArrayList<Seat> seats = new ArrayList<>();
                     if (!seatData.isEmpty()) {
