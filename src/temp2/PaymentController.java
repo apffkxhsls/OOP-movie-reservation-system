@@ -1,4 +1,4 @@
-package controller2;
+package temp2;
 
 import model.Movie;
 import model.Reservation;
@@ -10,11 +10,11 @@ import java.util.ArrayList;
 
 public class PaymentController {
 
-    private ReservationController reservationController;  
+    private ReservationController reservationController;
     private static final int BOOKING_FEE = 1000;
 
     public PaymentController(ReservationController reservationController) {
-        this.reservationController = reservationController; 
+        this.reservationController = reservationController;
     }
 
     // 상영관 종류별 금액 계산
@@ -55,7 +55,7 @@ public class PaymentController {
 
         int totalPrice = calculateTotalPrice(showInfo, selectedSeats);
         int finalPrice = totalPrice + BOOKING_FEE;
-        //금액 한번 더 확인  
+        // 금액 한번 더 확인
         if (totalPrice < 0) {
             System.out.println("결제 실패: 금액 계산 오류");
             return null;
@@ -66,7 +66,7 @@ public class PaymentController {
         if (!paymentSuccess) {
             System.out.println("결제 실패: 결제 또는 좌석 예약에 실패했습니다.");
             return null;
-}
+        }
 
         System.out.println("총 좌석 금액: " + totalPrice + "원");
         System.out.println("예매 수수료: " + BOOKING_FEE + "원");
@@ -74,8 +74,8 @@ public class PaymentController {
         System.out.println("결제가 완료되었습니다.");
 
         // 2. 결제 성공 후 ReservationController에 저장 요청
-        Reservation reservation = reservationController.saveReservation(showInfo,selectedSeats,totalPrice,BOOKING_FEE);
-
+        Reservation reservation = reservationController.saveReservation(showInfo, selectedSeats, totalPrice,
+                BOOKING_FEE);
 
         // 3. 저장 실패 시 좌석 다시 취소
         if (reservation == null) {
@@ -84,7 +84,7 @@ public class PaymentController {
             return null;
         }
 
-        return reservation; 
+        return reservation;
     }
 
     // 결제 완료 여부 확인
@@ -93,8 +93,8 @@ public class PaymentController {
         if (finalPrice <= 0) {
             return false;
         }
-        
-        //예약 성공 좌석들 저장 리스트
+
+        // 예약 성공 좌석들 저장 리스트
         ArrayList<Seat> reservedSeats = new ArrayList<>();
 
         for (Seat seat : selectedSeats) {
@@ -111,7 +111,7 @@ public class PaymentController {
                 return false;
             }
 
-            reservedSeats.add(seat); //성공 reservedSeats에 추가
+            reservedSeats.add(seat); // 성공 reservedSeats에 추가
         }
 
         return true;
