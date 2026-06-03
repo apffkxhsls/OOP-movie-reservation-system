@@ -34,6 +34,7 @@ public class Main {
         seats.add(new Seat("C5"));
 
         Reservation reservation = new Reservation("R001", showInfo, seats, 28000, 2000);
+        
         // MainView 실행
         SwingUtilities.invokeLater(() -> {
             try {
@@ -43,6 +44,7 @@ public class Main {
                 e.printStackTrace();
             }
         });
+
         // SeatView 실행
         SwingUtilities.invokeLater(() -> {
             try {
@@ -52,6 +54,7 @@ public class Main {
                 e.printStackTrace();
             }
         });
+
         // BookingConfirm 실행
         SwingUtilities.invokeLater(() -> {
             try {
@@ -65,29 +68,18 @@ public class Main {
 
         // BookingHistory 실행
         SwingUtilities.invokeLater(() -> {
-            BookingHistoryView bookingHistoryView = new BookingHistoryView();
-
-            bookingHistoryView.setLocation(500, 80);
-            bookingHistoryView.setAlwaysOnTop(true);
-            bookingHistoryView.setVisible(true);
-
-            ArrayList<Reservation> reservations = new ArrayList<>();
-            reservations.add(reservation);
-
-            bookingHistoryView.setReservations(reservations);
-            bookingHistoryView.revalidate();
-            bookingHistoryView.repaint();
-
-            bookingHistoryView.toFront();
-            bookingHistoryView.requestFocus();
-
-            SwingUtilities.invokeLater(() -> {
-                bookingHistoryView.setAlwaysOnTop(false);
-            });
+            try {
+                ArrayList<Reservation> reservations = repository.getAllReservations();
+                BookingHistoryView bookingHistoryView = new BookingHistoryView(reservations);
+                bookingHistoryView.setLocationRelativeTo(null);
+                bookingHistoryView.setVisible(true);
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
         });
     }
+}
 
-        // TODO: MainController 완성 후 아래처럼 교체
-        // MainController controller = new MainController(repository);
-        // controller.start();
-    }
+// TODO: MainController 완성 후 아래처럼 교체
+// MainController controller = new MainController(repository);
+// controller.start();

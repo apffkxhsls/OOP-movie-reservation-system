@@ -23,7 +23,7 @@ public class BookingHistoryView extends JFrame {
 
     private JPanel tableBodyPanel;
 
-    public BookingHistoryView() {
+    public BookingHistoryView(ArrayList<Reservation> reservations) {
         setTitle("BookingHistory");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(1040, 680);
@@ -36,11 +36,10 @@ public class BookingHistoryView extends JFrame {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
 
-    public BookingHistoryView(ArrayList<Reservation> reservations) {
-        this();
-        setReservations(reservations);
+        if (reservations != null) {
+            setReservations(reservations);
+        }
     }
 
     public void setBookingHistoryViewListener(BookingHistoryViewListener listener) {
@@ -71,9 +70,7 @@ public class BookingHistoryView extends JFrame {
 
         JButton backButton = createButton("이전으로", WHITE, NAVY, 110, 38);
         backButton.addActionListener(e -> {
-            if (listener != null) {
-                listener.onBack();
-            }
+            if (listener != null) listener.onBack();
         });
 
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
@@ -90,7 +87,6 @@ public class BookingHistoryView extends JFrame {
         bodyPanel.add(bottomPanel);
 
         contentPanel.add(bodyPanel, BorderLayout.CENTER);
-
         return contentPanel;
     }
 
@@ -115,7 +111,6 @@ public class BookingHistoryView extends JFrame {
         JPanel headerPanel = new JPanel(new GridLayout(1, 5));
         headerPanel.setBackground(NAVY);
         headerPanel.setPreferredSize(new Dimension(940, 58));
-
         headerPanel.add(createHeaderLabel("영화 제목"));
         headerPanel.add(createHeaderLabel("상영 일시"));
         headerPanel.add(createHeaderLabel("좌석"));
@@ -133,6 +128,7 @@ public class BookingHistoryView extends JFrame {
     }
 
     public void setReservations(ArrayList<Reservation> reservations) {
+        if (tableBodyPanel == null) return;
         tableBodyPanel.removeAll();
 
         if (reservations == null || reservations.isEmpty()) {
@@ -245,10 +241,7 @@ public class BookingHistoryView extends JFrame {
     }
 
     private String getSeatText(ArrayList<Seat> seats) {
-        if (seats == null || seats.isEmpty()) {
-            return "-";
-        }
-
+        if (seats == null || seats.isEmpty()) return "-";
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < seats.size(); i++) {
             if (i > 0) sb.append(", ");
@@ -259,11 +252,13 @@ public class BookingHistoryView extends JFrame {
 
     private String formatDate(String time) {
         if (time == null || time.length() < 10) return "-";
-        return time.substring(2, 10).replace("-", ".");
+        return time.substring(2, 10);
     }
 
     private String formatTime(String time) {
-        if (time == null || time.length() < 16) return "-";
-        return time.substring(11, 16);
+        if (time == null) return "-";
+        int idx = time.lastIndexOf(" ");
+        if (idx < 0 || idx + 5 > time.length()) return "-";
+        return time.substring(idx + 1);
     }
 }
