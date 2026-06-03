@@ -9,13 +9,13 @@ public class BreadCrumbPanel extends JPanel {
     private static final Color BG = new Color(0xF4, 0xF4, 0xF6);
     private static final Color ACTIVE = new Color(0x1A, 0x1A, 0x2E);
     private static final Color INACTIVE = new Color(0x99, 0x99, 0xAA);
-    
+
     // 글씨
     private static final Font ACTIVE_FONT = new Font("SansSerif", Font.BOLD, 13);
     private static final Font INACTIVE_FONT = new Font("SansSerif", Font.PLAIN, 13);
 
-    private static final String[] STEPS = {"영화 선택", "좌석 선택", "결제", "예매 내역 조회"};
-    
+    private static final String[] STEPS = { "영화 선택", "좌석 선택", "결제", "예매 내역 조회" };
+
     // activeStep: 0=영화선택, 1=좌석선택, 2=결제, 3=예매내역조회
     public BreadCrumbPanel(int activeStep) {
         setBackground(BG);
@@ -39,8 +39,4 @@ public class BreadCrumbPanel extends JPanel {
             }
         }
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> c1cc2c1d24d87f29906ad274be79dd772d4062e5
