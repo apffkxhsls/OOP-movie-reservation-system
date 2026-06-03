@@ -1,4 +1,4 @@
-package Controller1;
+package controller1;
 
 import java.util.List;
 import model.Movie;
@@ -19,7 +19,7 @@ public class MainController {
     private final ReservationRepository repository;
     // private MainView mainView;
     // private SeatController seatController;
-
+    
     /**
      * MainController 생성자입니다.
      * [수정 포인트] Main.java에서 시스템 시작 시 넘겨주는 ReservationRepository를
