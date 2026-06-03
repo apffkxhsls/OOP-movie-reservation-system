@@ -1,4 +1,4 @@
-package controller1;
+package Controller1;
 
 import java.util.List;
 import model.Movie;
