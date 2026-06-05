@@ -6,6 +6,7 @@ import model.ShowInfo;
 import view.component.BreadCrumbPanel;
 import view.component.HeaderPanel;
 import view.listener.BookingHistoryViewListener;
+import view.component.StyledButton;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,7 +16,7 @@ public class BookingHistoryView extends JFrame {
     private BookingHistoryViewListener listener;
 
     private static final Color NAVY       = new Color(43, 53, 88);
-    private static final Color BACKGROUND = new Color(234, 235, 239);
+    private static final Color BACKGROUND = new Color(230, 230, 230);
     private static final Color WHITE      = Color.WHITE;
     private static final Color TEXT       = new Color(40, 40, 40);
     private static final Color TEXT_GRAY  = new Color(100, 100, 100);
@@ -76,7 +77,7 @@ public class BookingHistoryView extends JFrame {
         tablePanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         // 하단 이전으로 버튼
-        JButton backButton = createButton("이전으로", WHITE, NAVY, 110, 38);
+        JButton backButton = new StyledButton("이전으로", WHITE, NAVY, 110, 38);
         backButton.addActionListener(e -> {
             if (listener != null) listener.onBack();
         });
@@ -104,9 +105,9 @@ public class BookingHistoryView extends JFrame {
         panel.setBackground(BACKGROUND);
         panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 36));
 
-        panel.add(createButton("전체",    NAVY,  WHITE, 80, 32));
-        panel.add(createButton("예매완료", WHITE, NAVY,  90, 32));
-        panel.add(createButton("취소",    WHITE, NAVY,  80, 32));
+        panel.add(StyledButton.navy("전체", 80, 32));
+        panel.add(StyledButton.outline("예매완료", 90, 32));
+        panel.add(StyledButton.outline("취소", 80, 32));    
 
         return panel;
     }
@@ -218,7 +219,7 @@ public class BookingHistoryView extends JFrame {
     private JLabel createHeaderLabel(String text) {
         JLabel label = new JLabel(text, SwingConstants.CENTER);
         label.setFont(new Font("맑은 고딕", Font.BOLD, 16));
-        label.setForeground(WHITE);
+        label.setForeground(Color.GRAY);
         return label;
     }
 
@@ -242,17 +243,6 @@ public class BookingHistoryView extends JFrame {
 
         panel.add(badge);
         return panel;
-    }
-
-    private JButton createButton(String text, Color bg, Color fg, int width, int height) {
-        JButton button = new JButton(text);
-        button.setPreferredSize(new Dimension(width, height));
-        button.setBackground(bg);
-        button.setForeground(fg);
-        button.setFocusPainted(false);
-        button.setBorderPainted(false);
-        button.setFont(new Font("맑은 고딕", Font.BOLD, 12));
-        return button;
     }
 
     // 날짜/시간 

@@ -7,6 +7,7 @@ import model.ShowInfo;
 import view.component.BreadCrumbPanel;
 import view.component.HeaderPanel;
 import view.listener.BookingConfirmViewListener;
+import view.component.StyledButton;
 
 import javax.swing.*;
 import java.awt.*;
@@ -207,8 +208,8 @@ private JPanel createInfoCard(String title, String[] labels, JLabel[] valueLabel
         panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 36));
         panel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        JButton backButton = createButton("이전으로", Color.WHITE, NAVY);
-        JButton nextButton = createButton("다음 단계", NAVY, Color.WHITE);
+        JButton backButton = StyledButton.outline("이전으로");
+        JButton nextButton = StyledButton.navy("다음 단계");
 
         backButton.addActionListener(e -> {
             if (listener != null) listener.onBack();
@@ -222,18 +223,6 @@ private JPanel createInfoCard(String title, String[] labels, JLabel[] valueLabel
         panel.add(nextButton);
 
         return panel;
-    }
-
-    // 공통 버튼 스타일 적용
-    private JButton createButton(String text, Color bg, Color fg) {
-        JButton button = new JButton(text);
-        button.setPreferredSize(new Dimension(92, 32));
-        button.setBackground(bg);
-        button.setForeground(fg);
-        button.setFocusPainted(false);
-        button.setBorderPainted(false);
-        button.setFont(new Font("맑은 고딕", Font.BOLD, 11));
-        return button;
     }
 
     // Reservation 객체의 정보를 화면에 표시

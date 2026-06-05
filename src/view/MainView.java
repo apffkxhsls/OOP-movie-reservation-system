@@ -12,13 +12,15 @@ import javax.swing.*;
 import model.DummyData;
 import model.Movie;
 import view.component.HeaderPanel;
+import view.component.StyledButton;
 import view.component.BreadCrumbPanel;
 import view.listener.MainViewListener;
 
 public class MainView extends JFrame {
 
     private MainViewListener listener;
-    
+    private static final Color BACKGROUND = new Color(230, 230, 230);
+
     public MainView() {
         setTitle("Main");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -32,17 +34,18 @@ public class MainView extends JFrame {
             }
         });
         add(header, BorderLayout.NORTH);
+        add(createContentPanel(), BorderLayout.CENTER); // 메서드 호출
+    }
 
-        // 헤더 아래에 들어갈 전체 영역
+    private JPanel createContentPanel() {
         JPanel contentPanel = new JPanel(new BorderLayout());
+        contentPanel.setBackground(BACKGROUND);
 
-        // 브레드크럼 + 검색창 영역
+        // 브레드크럼 + 검색창을 하나의 topPanel로 묶기
         JPanel topPanel = new JPanel(new BorderLayout());
-        
-        BreadCrumbPanel breadCrumb = new BreadCrumbPanel(0);
-        topPanel.add(breadCrumb, BorderLayout.CENTER);
+        topPanel.setBackground(new Color(0xF4, 0xF4, 0xF6));
+        topPanel.add(new BreadCrumbPanel(0), BorderLayout.CENTER);
 
-        // 검색창
         JTextField searchField = new JTextField("영화 검색....", 14);
         searchField.setForeground(Color.GRAY);
 
@@ -51,8 +54,8 @@ public class MainView extends JFrame {
         searchPanel.add(searchField);
 
         topPanel.add(searchPanel, BorderLayout.EAST);
-        contentPanel.add(topPanel, BorderLayout.NORTH);
-        
+        contentPanel.add(topPanel, BorderLayout.NORTH); // 하나의 NORTH에 묶어서 추가
+
         // 영화 목록 전체 영역
         JPanel bodyPanel = new JPanel(new BorderLayout());
         bodyPanel.setBorder(BorderFactory.createEmptyBorder(30, 60, 30, 60));
@@ -108,23 +111,21 @@ public class MainView extends JFrame {
             card.add(infoPanel, BorderLayout.CENTER);
 
             // 예매 버튼
-            JButton bookButton = new JButton("예매하기");
-            bookButton.setBackground(new Color(0x2B, 0x35, 0x58));
-            bookButton.setForeground(Color.WHITE);
-            bookButton.setFocusPainted(false);
+            JButton bookButton = StyledButton.navy("예매하기");
             bookButton.addActionListener(e -> {
                 if (listener != null) {
                     listener.onMovieSelected(movie);
                 }
             });
             card.add(bookButton, BorderLayout.SOUTH);
-            
+
             moviePanel.add(card);
         }
 
         bodyPanel.add(moviePanel, BorderLayout.CENTER);
         contentPanel.add(bodyPanel, BorderLayout.CENTER);
-        add(contentPanel, BorderLayout.CENTER);
+
+        return contentPanel; // 반환
     }
 
     public void setListener(MainViewListener listener) {

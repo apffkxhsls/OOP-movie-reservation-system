@@ -6,6 +6,7 @@ import view.component.HeaderPanel;
 import view.component.SeatButton;
 import view.component.SeatButton.State;
 import view.listener.SeatViewListener;  
+import view.component.StyledButton;
 
 import javax.swing.*;
 import java.awt.*;
@@ -242,12 +243,7 @@ public class SeatView extends JFrame {
         infoPanel.add(new JLabel("|"));
         infoPanel.add(priceLabel);
 
-        JButton nextButton = new JButton("다음 단계");
-        nextButton.setBackground(NAVY);
-        nextButton.setForeground(Color.WHITE);
-        nextButton.setFont(new Font("SansSerif", Font.BOLD, 12));
-        nextButton.setFocusPainted(false);
-        nextButton.setPreferredSize(new Dimension(88, 34));
+        JButton nextButton = new StyledButton("다음 단계", NAVY, Color.WHITE, 88, 34);
 
         // 다음 단계 버튼 클릭시 선택 좌석 목록을 Controller로 전달
         nextButton.addActionListener(e -> {
