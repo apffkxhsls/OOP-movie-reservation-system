@@ -79,9 +79,9 @@ public class MainController implements MainViewListener {
         // 무조건 첫 번째 DummyData를 가져오는 대신, '선택한 영화'와 일치하는 상영 정보(ShowInfo)를 매핑합니다.
         ShowInfo matchedShowInfo = null;
         for (ShowInfo info : DummyData.getShowInfos()) {
-            if (info.getMovie().equals(movie)) {
+            if (info.getMovie().getTitle().equals(movie.getTitle())) {
                 matchedShowInfo = info;
-                break; // 일치하는 상영 정보를 찾으면 즉시 탐색 종료
+                break;
             }
         }
 
