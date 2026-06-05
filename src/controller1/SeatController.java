@@ -62,7 +62,7 @@ public class SeatController implements SeatViewListener {
      * 현재 상영관(Theater)의 2D 좌석 배열(Seat[][]) 상태를 가져와
      * 콘솔 화면에 동기화된 가시적 배치도로 시각화 출력하는 메서드입니다.
      */
-    public void displaySeatLayout() {
+    private void displaySeatLayout() {
         System.out.println("\n===== SCREEN =====");
 
         Seat[][] seats = currentShowInfo.getTheater().getSeats();
