@@ -132,10 +132,6 @@ public class MainController implements MainViewListener {
         this.seatController.startSeatSelection(this.selectedMovie, this.selectedShowInfo);
     }
 
-    /**
-     * 예매 내역 조회 화면(BookingHistoryView)으로 이동하는 전이 메서드입니다.
-     * 구체적인 TODO 단계를 넘어 Control 2 파트의 ReservationController와 실제 연동을 수행합니다.
-     */
     public void openHistoryView() {
         System.out.println("[시스템] 예매 내역 조회 화면으로 이동합니다.");
 

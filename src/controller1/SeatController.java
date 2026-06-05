@@ -136,15 +136,14 @@ public class SeatController implements SeatViewListener {
 
         System.out.println("[시스템] 좌석 무결성 검증 통과 완료. 결제 및 예매 확정 단계로 제어권을 위임합니다.");
 
-        // 메모리 누수 방지 및 화면 간 간섭 차단을 위한 Swing 리소스 정리
+        // [기획서 9p 명시 사항] 기획서 파트 2(PaymentController)와의 데이터 전달 접점 연결
+        // PaymentController paymentController = new PaymentController();
+        // paymentController.processPayment(currentShowInfo, tempSelectedSeats);
+
         if (this.seatView != null) {
             this.seatView.setVisible(false);
             this.seatView.dispose();
         }
-
-        // [기획서 9p 명시 사항] 기획서 파트 2(PaymentController)와의 데이터 전달 접점 연결
-        // PaymentController paymentController = new PaymentController();
-        // paymentController.processPayment(currentShowInfo, tempSelectedSeats);
     }
 
     /**
