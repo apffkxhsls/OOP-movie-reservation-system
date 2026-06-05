@@ -33,7 +33,9 @@ public class SeatView extends JFrame {
 
         setTitle("Seat");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(1040, 680);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+        setResizable(false);
+
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
@@ -276,5 +278,7 @@ public class SeatView extends JFrame {
     // SeatViewListener 등록 (이벤트 연결)
     public void setListener(SeatViewListener listener) {
         this.listener = listener;
+
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 }

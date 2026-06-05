@@ -37,7 +37,9 @@ public class BookingConfirmView extends JFrame {
     public BookingConfirmView() {
         setTitle("BookingConfirm");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(1040, 680);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+        setResizable(false);
+
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
@@ -48,6 +50,8 @@ public class BookingConfirmView extends JFrame {
     // Listener 등록
     public void setBookingConfirmViewListener(BookingConfirmViewListener listener) {
         this.listener = listener;
+
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
     // 전체 화면 구성

@@ -27,12 +27,19 @@ public class BookingHistoryView extends JFrame {
     public BookingHistoryView(ArrayList<Reservation> reservations) {
         setTitle("BookingHistory");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setSize(1040, 680);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+        setResizable(false);
+
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
-
+        // BookingHistoryView '홈으로' 버튼 클릭시 메인 화면 이동 
         try {
-            add(new HeaderPanel("홈으로"), BorderLayout.NORTH);
+            HeaderPanel headerPanel = new HeaderPanel("홈으로");
+            headerPanel.addRightButtonListener(e -> {
+                if (listener != null)
+                    listener.onBack();
+            });
+            add(headerPanel, BorderLayout.NORTH);
             add(createContentPanel(), BorderLayout.CENTER);
         } catch (Exception e) {
             e.printStackTrace();
@@ -47,6 +54,8 @@ public class BookingHistoryView extends JFrame {
     // Listener 등록
     public void setBookingHistoryViewListener(BookingHistoryViewListener listener) {
         this.listener = listener;
+
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
     // 전체 레이아웃    
