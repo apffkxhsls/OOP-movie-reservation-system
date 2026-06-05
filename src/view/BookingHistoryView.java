@@ -32,7 +32,7 @@ public class BookingHistoryView extends JFrame {
 
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
-        //
+        // BookingHistoryView '홈으로' 버튼 클릭시 메인 화면 이동 
         try {
             HeaderPanel headerPanel = new HeaderPanel("홈으로");
             headerPanel.addRightButtonListener(e -> {
