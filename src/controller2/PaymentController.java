@@ -10,7 +10,7 @@ import model.theater.Theater;
 import java.util.ArrayList;
 
 
-// PaymnetController클래스: 결제 금액 계산, 좌석 예약 처리, 예매 요청 담당.
+// PaymentController클래스: 결제 금액 계산, 좌석 예약 처리, 예매 요청 담당.
 public class PaymentController {
 
     //PaymentController가 예매 저장을 직접 하지 않고, ReservationController에게 요청하기 위해 가지고 있는 변수. 
@@ -108,7 +108,7 @@ public class PaymentController {
             return null;
         }
         return reservation;
-        //저장 성공하면 Reservaion객체 반환
+        //저장 성공하면 Reservation객체 반환
     }
 
     // 결제 완료 여부 확인하는 private 메소드
