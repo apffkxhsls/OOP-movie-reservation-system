@@ -38,6 +38,9 @@ public class ReservationRepository {
 
                 bw.write(r.getReservationNumber() + "," +
                         r.getShowInfo().getMovie().getTitle() + "," +
+                        r.getShowInfo().getMovie().getGenre() + "," + // ✅ 추가
+                        r.getShowInfo().getMovie().getDurationMinutes() + "," + // ✅ 추가
+                        r.getShowInfo().getMovie().getAgeRating() + "," + // ✅ 추가
                         r.getShowInfo().getTime() + "," +
                         r.getTotalPrice() + "," +
                         r.getBookingFee() + "," +
@@ -60,14 +63,17 @@ public class ReservationRepository {
             while ((line = br.readLine()) != null) {
                 String[] data = line.split(",");
 
-                if (data.length == 7) {
+                if (data.length == 10) { // ✅ 7 → 10
                     String resNum = data[0];
                     String movieTitle = data[1];
-                    String time = data[2];
-                    int price = Integer.parseInt(data[3]);
-                    int fee = Integer.parseInt(data[4]);
-                    String seatData = data[5];
-                    String status = data[6];
+                    String genre = data[2]; // ✅ 추가
+                    int duration = Integer.parseInt(data[3]); // ✅ 추가
+                    String ageRating = data[4]; // ✅ 추가
+                    String time = data[5];
+                    int price = Integer.parseInt(data[6]);
+                    int fee = Integer.parseInt(data[7]);
+                    String seatData = data[8];
+                    String status = data[9];
 
                     ArrayList<Seat> seats = new ArrayList<>();
                     if (!seatData.isEmpty()) {
@@ -76,7 +82,7 @@ public class ReservationRepository {
                         }
                     }
 
-                    Movie tempMovie = new Movie(movieTitle, null, 0, 0, null);
+                    Movie tempMovie = new Movie(movieTitle, genre, 0, duration, ageRating); // ✅ 수정
                     ShowInfo tempInfo = new ShowInfo(tempMovie, null, time, 0);
                     Reservation r = new Reservation(resNum, tempInfo, seats, price, fee);
 
