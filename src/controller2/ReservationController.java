@@ -65,7 +65,7 @@ public class ReservationController {
         }
         //이미 취소한 예매 상태일 경우 확인
         if ("취소".equals(reservation.getStatus())) {
-            system.out.println("이미 취소된 예매입니다.");
+            System.out.println("이미 취소된 예매입니다.");
             return;
         }
 
