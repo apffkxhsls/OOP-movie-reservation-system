@@ -53,7 +53,6 @@ public class DummyData {
     }
 
     public static ArrayList<Movie> getReservations() {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getReservations'");
     }
 }
