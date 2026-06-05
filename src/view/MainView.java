@@ -59,7 +59,8 @@ public class MainView extends JFrame {
         // 영화 목록 전체 영역
         JPanel bodyPanel = new JPanel(new BorderLayout());
         bodyPanel.setBorder(BorderFactory.createEmptyBorder(30, 60, 30, 60));
-
+        bodyPanel.setBackground(BACKGROUND);
+        
         // 섹션 제목
         JLabel sectionTitle = new JLabel("현재 상영 중");
         sectionTitle.setFont(new Font("SansSerif", Font.BOLD, 20));

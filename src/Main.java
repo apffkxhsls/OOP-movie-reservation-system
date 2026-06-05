@@ -35,6 +35,7 @@ public class Main {
         seats.add(new Seat("C5"));
 
         Reservation reservation = new Reservation("R001", showInfo, seats, 28000, 2000);
+        repository.addReservation(reservation); // 테스트용 더미 예매 데이터 저장 (Controller 연결 후 제거)
         
         // MainView 실행 (Controller 연결 전)
         SwingUtilities.invokeLater(() -> {
@@ -72,7 +73,6 @@ public class Main {
             try {
                 ArrayList<Reservation> reservations = repository.getAllReservations();
                 BookingHistoryView bookingHistoryView = new BookingHistoryView(reservations);
-                bookingHistoryView.setLocationRelativeTo(null);
                 bookingHistoryView.setVisible(true);
             } catch (Throwable e) {
                 e.printStackTrace();

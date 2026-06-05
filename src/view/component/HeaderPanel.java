@@ -35,6 +35,7 @@ public class HeaderPanel extends JPanel {
             rightButton.setPreferredSize(new Dimension(130, 40));
             rightButton.setBorder(BorderFactory.createEmptyBorder(6, 16, 6, 16));
             rightButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            rightButton.setMargin(new Insets(0, 0, 0, 0));
             JPanel wrap = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
             wrap.setOpaque(false);
             wrap.add(rightButton);

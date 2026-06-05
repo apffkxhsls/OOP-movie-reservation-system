@@ -2,16 +2,15 @@ package view;
 
 import model.Movie;
 import model.Reservation;
-import model.Seat;
 import model.ShowInfo;
 import view.component.BreadCrumbPanel;
 import view.component.HeaderPanel;
 import view.listener.BookingConfirmViewListener;
 import view.component.StyledButton;
+import view.component.SeatUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
 
 public class BookingConfirmView extends JFrame {
     // 버튼 이벤트를 Controller에 전달하기 위한 Listener
@@ -31,7 +30,7 @@ public class BookingConfirmView extends JFrame {
     private JLabel finalPriceLabel;
 
     // 공통 색상
-    private static final Color NAVY = new Color(50, 58, 95);
+    private static final Color NAVY = HeaderPanel.NAVY;
     private static final Color BACKGROUND = new Color(230, 230, 230);
 
     // 화면 생성 및 UI 구현
@@ -236,24 +235,11 @@ private JPanel createInfoCard(String title, String[] labels, JLabel[] valueLabel
 
         showTimeValueLabel.setText(showInfo.getTime());
         theaterValueLabel.setText(showInfo.getTheater().getName());
-        seatValueLabel.setText(getSeatText(reservation.getSeats()));
+        seatValueLabel.setText(SeatUtils.getSeatTextWithCount(reservation.getSeats()));
 
         seatPriceValueLabel.setText(String.format("%,d원", reservation.getTotalPrice()));
         bookingFeeValueLabel.setText(String.format("%,d원", reservation.getBookingFee()));
 
         finalPriceLabel.setText(String.format("%,d원", reservation.getFinalPrice()));
-    }
-
-    // 좌석 정보를 화면에 표시할 문자열 형태로 변환
-    private String getSeatText(ArrayList<Seat> seats) {
-        StringBuilder sb = new StringBuilder();
-
-        for (int i = 0; i < seats.size(); i++) {
-            if (i > 0) sb.append(", ");
-            sb.append(seats.get(i).getSeatId());
-        }
-
-        sb.append(" (일반 ").append(seats.size()).append("석)");
-        return sb.toString();
     }
 }

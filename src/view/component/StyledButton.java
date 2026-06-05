@@ -22,6 +22,9 @@ public class StyledButton extends JButton {
         setFocusPainted(false);
         setBorderPainted(false);
         setFont(new Font("맑은 고딕", Font.BOLD, 12));
+        setVerticalAlignment(SwingConstants.CENTER);
+        setHorizontalAlignment(SwingConstants.CENTER);
+        setMargin(new Insets(0, 0, 0, 0));
     }
 
     // 자주 쓰는 네이비 + 흰 글씨 조합

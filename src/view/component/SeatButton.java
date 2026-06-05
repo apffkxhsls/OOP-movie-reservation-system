@@ -10,7 +10,7 @@ public class SeatButton extends JButton {
     public enum State { AVAILABLE, RESERVED, SELECTED }
 
     // SeatView에서 사용하는 선택 색상과 동일한 NAVY 색상
-    private static final Color NAVY = new Color(25, 42, 86);
+    private static final Color NAVY = HeaderPanel.NAVY;
 
     // 상태: AVAILABLE, RESERVED, SELECTED
     private static final Color C_AVAILABLE = Color.LIGHT_GRAY;
