@@ -19,6 +19,7 @@ public class SeatController implements SeatViewListener {
     // 1. 상태 저장용 필드 (캡슐화 원칙 적용)
     private Runnable returnToMainAction; // 화면 복귀를 위한 필드
     private BiConsumer<ShowInfo, List<Seat>> proceedToPaymentAction;
+    private Runnable openHistoryAction; // 예매 내역 조회 화면 이동을 위한 콜백
 
     private Movie currentMovie;
     private ShowInfo currentShowInfo;
@@ -32,9 +33,11 @@ public class SeatController implements SeatViewListener {
      * 
      * @param mainController 취소/뒤로 가기 시 메인 화면으로 돌아가기 위해 상위 컨트롤러를 주입받습니다.
      */
-    public SeatController(Runnable returnToMainAction, BiConsumer<ShowInfo, List<Seat>> proceedToPaymentAction) {
+    public SeatController(Runnable returnToMainAction, BiConsumer<ShowInfo, List<Seat>> proceedToPaymentAction,
+            Runnable openHistoryAction) {
         this.returnToMainAction = returnToMainAction;
         this.proceedToPaymentAction = proceedToPaymentAction;
+        this.openHistoryAction = openHistoryAction;
         this.tempSelectedSeats = new ArrayList<>();
     }
 
@@ -211,6 +214,18 @@ public class SeatController implements SeatViewListener {
      */
     @Override
     public void onHistoryButtonClicked() {
-        cancelAndGoBack();
+        // 1. 좌석 선택 세션의 상태 초기화 및 현재 창 닫기 (메모리 누수 방지)
+        this.currentMovie = null;
+        this.currentShowInfo = null;
+        this.tempSelectedSeats.clear();
+        if (this.seatView != null) {
+            this.seatView.setVisible(false);
+            this.seatView.dispose();
+        }
+
+        // 2. 주입받은 콜백을 통해 MainController의 openHistoryView() 호출
+        if (this.openHistoryAction != null) {
+            this.openHistoryAction.run();
+        }
     }
 }

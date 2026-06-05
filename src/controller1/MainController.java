@@ -15,7 +15,6 @@ import view.listener.MainViewListener;
 import view.listener.BookingHistoryViewListener;
 import controller2.PaymentController;
 import controller2.ReservationController;
-import java.util.function.BiConsumer;
 
 /**
  * 영화 예매 시스템의 최초 진입점(Entry Point)과 전반적인 화면 전환 흐름을 제어하는 메인 컨트롤러입니다.
@@ -41,7 +40,8 @@ public class MainController implements MainViewListener {
         this.repository = repository;
         this.seatController = new SeatController(
                 this::goMainView,
-                (ShowInfo showInfo, List<Seat> selectedSeats) -> this.openPaymentView(showInfo, selectedSeats));
+                (ShowInfo showInfo, List<Seat> selectedSeats) -> this.openPaymentView(showInfo, selectedSeats),
+                this::openHistoryView);
     }
 
     /**
@@ -77,7 +77,7 @@ public class MainController implements MainViewListener {
         // 무조건 첫 번째 DummyData를 가져오는 대신, '선택한 영화'와 일치하는 상영 정보(ShowInfo)를 매핑합니다.
         ShowInfo matchedShowInfo = null;
         for (ShowInfo info : DummyData.getShowInfos()) {
-            if (info.getMovie().getTitle().equals(movie.getTitle())) {
+            if (info.getMovie().equals(movie)) {
                 matchedShowInfo = info;
                 break; // 일치하는 상영 정보를 찾으면 즉시 탐색 종료
             }
