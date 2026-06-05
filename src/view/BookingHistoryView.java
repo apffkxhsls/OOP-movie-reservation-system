@@ -230,7 +230,7 @@ public class BookingHistoryView extends JFrame {
     private JLabel createHeaderLabel(String text) {
         JLabel label = new JLabel(text, SwingConstants.CENTER);
         label.setFont(new Font("맑은 고딕", Font.BOLD, 16));
-        label.setForeground(Color.GRAY);
+        label.setForeground(Color.WHITE);
         return label;
     }
 
