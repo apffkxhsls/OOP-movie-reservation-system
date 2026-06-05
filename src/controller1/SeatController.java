@@ -16,7 +16,7 @@ import view.listener.SeatViewListener;
 public class SeatController implements SeatViewListener {
 
     // 1. 상태 저장용 필드 (캡슐화 원칙 적용)
-    private MainController mainController; // [추가됨] 화면 복귀를 위해 메인 컨트롤러를 기억할 필드
+    private Runnable returnToMainAction; // 화면 복귀를 위한 필드
 
     private Movie currentMovie;
     private ShowInfo currentShowInfo;
@@ -30,9 +30,9 @@ public class SeatController implements SeatViewListener {
      * 
      * @param mainController 취소/뒤로 가기 시 메인 화면으로 돌아가기 위해 상위 컨트롤러를 주입받습니다.
      */
-    public SeatController(MainController mainController) {
-        this.mainController = mainController; // [추가됨] 전달받은 메인 컨트롤러 주소 저장
-        this.tempSelectedSeats = new ArrayList<>(); // 선택된 좌석 목록을 빈 리스트로 안전하게 초기화
+    public SeatController(Runnable returnToMainAction) {
+        this.returnToMainAction = returnToMainAction;
+        this.tempSelectedSeats = new ArrayList<>();
     }
 
     /**
@@ -164,7 +164,9 @@ public class SeatController implements SeatViewListener {
         System.out.println("[시스템] 좌석 선택 세션이 완전히 취소되었습니다. 메인 대시보드로 복귀합니다.");
 
         // [수정됨] 주입받은 MainController를 통해 메인 화면으로 복귀합니다!
-        this.mainController.goMainView();
+        if (this.returnToMainAction != null) {
+            this.returnToMainAction.run();
+        }
     }
 
     /**
