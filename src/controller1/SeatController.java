@@ -178,19 +178,26 @@ public class SeatController implements SeatViewListener {
     public void onNextButtonClicked(List<String> selectedSeats) {
         this.tempSelectedSeats.clear(); // 재검증을 위한 기존 리스트 초기화
 
-        boolean isAllValid = true;
+        // 1. 실패한 좌석들을 모아둘 리스트 생성
+        List<String> failedSeats = new ArrayList<>();
+
         for (String seatName : selectedSeats) {
-            // 전달받은 개별 문자열 좌석 데이터에 대한 비즈니스 유효성 검사 루프 수행
+            // 2. break 없이 모든 좌석을 끝까지 검사
             if (!selectSeat(seatName)) {
-                isAllValid = false;
-                break;
+                failedSeats.add(seatName); // 검증 실패 시 리스트에 좌석 이름 추가
             }
         }
 
-        if (isAllValid) {
-            confirmSeatSelection(); // 모든 검증 통과 시 결제 프로세스로 전진
+        // 3. 실패한 좌석이 비어있다면(=모두 성공했다면) 결제 진행
+        if (failedSeats.isEmpty()) {
+            confirmSeatSelection();
         } else {
-            this.tempSelectedSeats.clear(); // 검증 실패 시 불완전한 상태 전이 차단을 위해 전체 초기화
+            // 4. 실패한 좌석이 하나라도 있다면 모아서 한 번에 출력 (UX 개선)
+            String failedListStr = String.join(", ", failedSeats);
+            System.out.println("[오류] 다음 좌석은 예매가 불가능합니다: [" + failedListStr + "]");
+            System.out.println("[시스템] 좌석을 다시 선택해 주세요.");
+
+            this.tempSelectedSeats.clear(); // 불완전한 상태 전이 차단을 위해 전체 초기화
         }
     }
 
