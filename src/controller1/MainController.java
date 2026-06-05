@@ -1,18 +1,21 @@
 package controller1;
 
 import java.util.ArrayList;
+import java.util.List;
+
 import model.Movie;
 import model.ShowInfo;
 import model.DummyData;
 import model.Reservation;
 import model.ReservationRepository;
-
+import model.Seat;
 import view.MainView;
 import view.BookingHistoryView;
 import view.listener.MainViewListener;
 import view.listener.BookingHistoryViewListener;
-
+import controller2.PaymentController;
 import controller2.ReservationController;
+import java.util.function.BiConsumer;
 
 /**
  * 영화 예매 시스템의 최초 진입점(Entry Point)과 전반적인 화면 전환 흐름을 제어하는 메인 컨트롤러입니다.
@@ -36,9 +39,9 @@ public class MainController implements MainViewListener {
      */
     public MainController(ReservationRepository repository) {
         this.repository = repository;
-
-        // [OOP 설계 포인트] SeatController가 나중에 "뒤로 가기"를 눌렀을 때
-        this.seatController = new SeatController(this::goMainView);
+        this.seatController = new SeatController(
+                this::goMainView,
+                (ShowInfo showInfo, List<Seat> selectedSeats) -> this.openPaymentView(showInfo, selectedSeats));
     }
 
     /**
@@ -187,5 +190,21 @@ public class MainController implements MainViewListener {
         if (this.mainView != null) {
             this.mainView.setVisible(true);
         }
+    }
+
+    /**
+     * SeatController에서 좌석 선택이 완료되었을 때 호출되어 결제 컨트롤러로 데이터를 전달합니다.
+     */
+    public void openPaymentView(ShowInfo showInfo, List<Seat> selectedSeats) {
+        System.out.println("[시스템] 결제 컨트롤러(PaymentController)를 가동합니다.");
+
+        // 1. PaymentController가 필요로 하는 ReservationController를 먼저 생성 (저장소 공유)
+        ReservationController reservationController = new ReservationController(this.repository);
+
+        // 2. PaymentController 생성 (의존성 주입)
+        PaymentController paymentController = new PaymentController(reservationController);
+
+        // 3. PaymentController는 ArrayList를 요구하므로, List를 변환하여 안전하게 전달!
+        paymentController.processPayment(showInfo, new ArrayList<>(selectedSeats));
     }
 }

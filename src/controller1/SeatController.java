@@ -7,6 +7,7 @@ import model.Seat;
 import model.ShowInfo;
 import view.SeatView;
 import view.listener.SeatViewListener;
+import java.util.function.BiConsumer;
 
 /**
  * 상영관의 좌석 배치도를 표시하고, 좌석 선택의 유효성 검증 및
@@ -17,6 +18,7 @@ public class SeatController implements SeatViewListener {
 
     // 1. 상태 저장용 필드 (캡슐화 원칙 적용)
     private Runnable returnToMainAction; // 화면 복귀를 위한 필드
+    private BiConsumer<ShowInfo, List<Seat>> proceedToPaymentAction;
 
     private Movie currentMovie;
     private ShowInfo currentShowInfo;
@@ -30,8 +32,9 @@ public class SeatController implements SeatViewListener {
      * 
      * @param mainController 취소/뒤로 가기 시 메인 화면으로 돌아가기 위해 상위 컨트롤러를 주입받습니다.
      */
-    public SeatController(Runnable returnToMainAction) {
+    public SeatController(Runnable returnToMainAction, BiConsumer<ShowInfo, List<Seat>> proceedToPaymentAction) {
         this.returnToMainAction = returnToMainAction;
+        this.proceedToPaymentAction = proceedToPaymentAction;
         this.tempSelectedSeats = new ArrayList<>();
     }
 
@@ -136,9 +139,10 @@ public class SeatController implements SeatViewListener {
 
         System.out.println("[시스템] 좌석 무결성 검증 통과 완료. 결제 및 예매 확정 단계로 제어권을 위임합니다.");
 
-        // [기획서 9p 명시 사항] 기획서 파트 2(PaymentController)와의 데이터 전달 접점 연결
-        // PaymentController paymentController = new PaymentController();
-        // paymentController.processPayment(currentShowInfo, tempSelectedSeats);
+        // ✅ 직접 만들지 않고, 주입받은 콜백을 통해 상영 정보와 좌석 리스트를 MainController로 안전하게 토스!
+        if (this.proceedToPaymentAction != null) {
+            this.proceedToPaymentAction.accept(this.currentShowInfo, this.tempSelectedSeats);
+        }
 
         if (this.seatView != null) {
             this.seatView.setVisible(false);
