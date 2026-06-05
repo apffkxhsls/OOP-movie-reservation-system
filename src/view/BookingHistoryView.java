@@ -32,9 +32,14 @@ public class BookingHistoryView extends JFrame {
 
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
-
+        //
         try {
-            add(new HeaderPanel("홈으로"), BorderLayout.NORTH);
+            HeaderPanel headerPanel = new HeaderPanel("홈으로");
+            headerPanel.addRightButtonListener(e -> {
+                if (listener != null)
+                    listener.onBack();
+            });
+            add(headerPanel, BorderLayout.NORTH);
             add(createContentPanel(), BorderLayout.CENTER);
         } catch (Exception e) {
             e.printStackTrace();
