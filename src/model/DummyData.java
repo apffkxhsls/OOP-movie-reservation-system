@@ -51,4 +51,8 @@ public class DummyData {
 
         return showInfos;
     }
+
+    public static ArrayList<Movie> getReservations() {
+        throw new UnsupportedOperationException("Unimplemented method 'getReservations'");
+    }
 }

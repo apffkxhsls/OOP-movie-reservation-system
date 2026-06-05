@@ -20,4 +20,8 @@ public class Movie {
     public int getBasePrice() { return basePrice; }
     public int getDurationMinutes() { return durationMinutes; }
     public String getAgeRating() { return ageRating; }
+    // (추가) getRunningTime() 메서드 구현
+    public int getRunningTime() {
+        return durationMinutes;
+    }
 }
