@@ -133,5 +133,7 @@ public class MainView extends JFrame {
 
     public void setListener(MainViewListener listener) {
         this.listener = listener;
+        
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 }

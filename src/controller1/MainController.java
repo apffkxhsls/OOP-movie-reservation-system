@@ -10,8 +10,10 @@ import model.Reservation;
 import model.ReservationRepository;
 import model.Seat;
 import view.MainView;
+import view.BookingConfirmView;
 import view.BookingHistoryView;
 import view.listener.MainViewListener;
+import view.listener.BookingConfirmViewListener;
 import view.listener.BookingHistoryViewListener;
 import controller2.PaymentController;
 import controller2.ReservationController;
@@ -198,13 +200,40 @@ public class MainController implements MainViewListener {
     public void openPaymentView(ShowInfo showInfo, List<Seat> selectedSeats) {
         System.out.println("[시스템] 결제 컨트롤러(PaymentController)를 가동합니다.");
 
-        // 1. PaymentController가 필요로 하는 ReservationController를 먼저 생성 (저장소 공유)
         ReservationController reservationController = new ReservationController(this.repository);
-
-        // 2. PaymentController 생성 (의존성 주입)
         PaymentController paymentController = new PaymentController(reservationController);
 
-        // 3. PaymentController는 ArrayList를 요구하므로, List를 변환하여 안전하게 전달!
-        paymentController.processPayment(showInfo, new ArrayList<>(selectedSeats));
+        Reservation reservation = paymentController.processPayment(showInfo, new ArrayList<>(selectedSeats));
+
+        // 결제 실패 시
+        if (reservation == null) {
+            System.out.println("[오류] 결제 실패. 메인 화면으로 돌아갑니다.");
+            goMainView();
+            return;
+        }
+
+        BookingConfirmView confirmView = new BookingConfirmView(); // 파라미터 없는 생성자
+        confirmView.setReservation(reservation); // 데이터 주입
+        confirmView.setBookingConfirmViewListener(new BookingConfirmViewListener() {
+            @Override
+            public void onBack() {
+                confirmView.dispose();
+                seatController.startSeatSelection(selectedMovie, selectedShowInfo);
+            }
+
+            @Override
+            public void onNext() {
+                confirmView.dispose();
+                openHistoryView();
+            }
+
+            @Override
+            public void onHistory() {
+                confirmView.dispose();
+                openHistoryView();
+            }
+        });
+
+        confirmView.setVisible(true);
     }
 }

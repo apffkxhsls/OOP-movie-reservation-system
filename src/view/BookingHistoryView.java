@@ -49,6 +49,8 @@ public class BookingHistoryView extends JFrame {
     // Listener 등록
     public void setBookingHistoryViewListener(BookingHistoryViewListener listener) {
         this.listener = listener;
+
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
     // 전체 레이아웃    

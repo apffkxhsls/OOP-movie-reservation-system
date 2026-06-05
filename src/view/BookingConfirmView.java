@@ -50,6 +50,8 @@ public class BookingConfirmView extends JFrame {
     // Listener 등록
     public void setBookingConfirmViewListener(BookingConfirmViewListener listener) {
         this.listener = listener;
+
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
     // 전체 화면 구성
