@@ -27,7 +27,9 @@ public class BookingHistoryView extends JFrame {
     public BookingHistoryView(ArrayList<Reservation> reservations) {
         setTitle("BookingHistory");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setSize(1040, 680);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+        setResizable(false);
+
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
