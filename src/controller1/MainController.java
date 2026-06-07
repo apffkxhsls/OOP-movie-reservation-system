@@ -2,7 +2,6 @@ package controller1;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JOptionPane;
 
 import model.Movie;
 import model.ShowInfo;
@@ -21,20 +20,24 @@ import controller2.ReservationController;
 
 public class MainController implements MainViewListener {
 
-    private Movie selectedMovie;
     private ShowInfo selectedShowInfo;
 
-    private final ReservationRepository repository;
     private final MainView mainView;
     private final SeatController seatController;
+    private final ControllerFactory factory; // Factory 패턴
+    private final UIProvider ui; // Adapter 패턴
 
+    // 제약조건: Main.java에서 호출하는 생성자 시그니처 유지
     public MainController(ReservationRepository repository) {
-        this.repository = repository;
+        // 객체 생성 로직을 팩토리로 위임 (DIP 준수)
+        this.factory = new ControllerFactory(repository);
+        this.ui = factory.createUIProvider();
 
-        this.mainView = new MainView();
+        this.mainView = factory.createMainView();
         this.mainView.setListener(this);
 
         this.seatController = new SeatController(
+                this.ui,
                 this::openPaymentView,
                 this::openHistoryView);
     }
@@ -45,8 +48,6 @@ public class MainController implements MainViewListener {
 
     @Override
     public void onMovieSelected(Movie movie) {
-        this.selectedMovie = movie;
-
         ShowInfo matchedShowInfo = null;
         for (ShowInfo info : DummyData.getShowInfos()) {
             if (info.getMovie().getTitle().equals(movie.getTitle())) {
@@ -56,7 +57,7 @@ public class MainController implements MainViewListener {
         }
 
         if (matchedShowInfo == null) {
-            JOptionPane.showMessageDialog(mainView, "해당 영화의 상영 정보를 찾지 못했습니다.", "알림", JOptionPane.WARNING_MESSAGE);
+            ui.showWarningMessage("해당 영화의 상영 정보를 찾지 못했습니다.", "알림");
             matchedShowInfo = DummyData.getShowInfos().get(0);
         }
 
@@ -70,24 +71,23 @@ public class MainController implements MainViewListener {
     }
 
     public void openSeatView() {
-        if (this.selectedMovie == null || this.selectedShowInfo == null) {
-            JOptionPane.showMessageDialog(mainView, "영화와 상영 정보에 오류가 발생했습니다.", "오류", JOptionPane.ERROR_MESSAGE);
+        if (this.selectedShowInfo == null) {
+            ui.showErrorMessage("상영 정보에 오류가 발생했습니다.", "오류");
             return;
         }
 
         this.mainView.setVisible(false);
-        // 수정됨: this.selectedMovie 파라미터 제거
         this.seatController.startSeatSelection(this.selectedShowInfo);
     }
 
     public void openHistoryView() {
         this.mainView.setVisible(false);
 
-        // 타 파트의 BookingHistoryView는 생성 시 데이터를 강제하므로 여기서 동적 생성
-        ReservationController resController = new ReservationController(this.repository);
+        // 팩토리를 통해 Controller2 파트의 컨트롤러와 View 안전하게 생성
+        ReservationController resController = factory.createReservationController();
         ArrayList<Reservation> reservations = resController.getReservationList();
 
-        BookingHistoryView historyView = new BookingHistoryView(reservations);
+        BookingHistoryView historyView = factory.createHistoryView(reservations);
         historyView.setBookingHistoryViewListener(new BookingHistoryViewListener() {
             @Override
             public void onBack() {
@@ -104,25 +104,23 @@ public class MainController implements MainViewListener {
     }
 
     public void goMainView() {
-        this.selectedMovie = null;
         this.selectedShowInfo = null;
         this.mainView.setVisible(true);
     }
 
     public void openPaymentView(ShowInfo showInfo, List<Seat> selectedSeats) {
-        ReservationController resController = new ReservationController(this.repository);
-        PaymentController paymentController = new PaymentController(resController);
+        ReservationController resController = factory.createReservationController();
+        PaymentController paymentController = factory.createPaymentController(resController);
 
         Reservation reservation = paymentController.processPayment(showInfo, new ArrayList<>(selectedSeats));
 
         if (reservation == null) {
-            JOptionPane.showMessageDialog(mainView, "결제 진행 중 오류가 발생했습니다. 메인 화면으로 돌아갑니다.", "결제 실패",
-                    JOptionPane.ERROR_MESSAGE);
+            ui.showErrorMessage("결제 진행 중 오류가 발생했습니다. 메인 화면으로 돌아갑니다.", "결제 실패");
             goMainView();
             return;
         }
 
-        BookingConfirmView confirmView = new BookingConfirmView();
+        BookingConfirmView confirmView = factory.createConfirmView();
         confirmView.setReservation(reservation);
         confirmView.setBookingConfirmViewListener(new BookingConfirmViewListener() {
             @Override
