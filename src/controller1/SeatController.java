@@ -2,228 +2,116 @@ package controller1;
 
 import java.util.ArrayList;
 import java.util.List;
-import model.Movie;
+
 import model.Seat;
 import model.ShowInfo;
 import view.SeatView;
 import view.listener.SeatViewListener;
 import java.util.function.BiConsumer;
 
-/**
- * 상영관의 좌석 배치도를 표시하고, 좌석 선택의 유효성 검증 및
- * 임시 할당을 제어하는 좌석 전담 컨트롤러 클래스입니다.
- * Java Swing GUI인 SeatView의 이벤트를 수신하기 위해 SeatViewListener를 구현합니다.
- */
+// SeatViewListener 구현을 통해 좌석 선택 화면에서 발생하는 이벤트를 처리하고, 사용자 좌석 선점 논리 검증 및 선택 데이터 관리를 수행하는 컨트롤러
 public class SeatController implements SeatViewListener {
 
-    // 1. 상태 저장용 필드 (캡슐화 원칙 적용)
-    private Runnable returnToMainAction; // 화면 복귀를 위한 필드
+    private final UIProvider ui;
     private BiConsumer<ShowInfo, List<Seat>> proceedToPaymentAction;
-    private Runnable openHistoryAction; // 예매 내역 조회 화면 이동을 위한 콜백
+    private Runnable openHistoryAction;
 
-    private Movie currentMovie;
-    private ShowInfo currentShowInfo;
-    private List<Seat> tempSelectedSeats; // 사용자가 '현재 단계'에서 선택 중인 임시 좌석 리스트
+    private SeatManager seatManager;
+    private List<Seat> tempSelectedSeats;
+    private SeatView seatView;
 
-    // 2. 연동할 UI 뷰 객체 정의
-    private SeatView seatView; // 좌석 화면 관리를 위한 Swing 뷰 객체
-
-    /**
-     * SeatController의 생성자입니다.
-     * 
-     * @param mainController 취소/뒤로 가기 시 메인 화면으로 돌아가기 위해 상위 컨트롤러를 주입받습니다.
-     */
-    public SeatController(Runnable returnToMainAction, BiConsumer<ShowInfo, List<Seat>> proceedToPaymentAction,
+    // 생성자: 알림을 위한 UIProvider와 다른 화면(결제 화면, 내역 화면)으로 넘어가기 위한 콜백 함수(Action)들을 외부로부터
+    // 주입받아 초기화
+    public SeatController(UIProvider ui, BiConsumer<ShowInfo, List<Seat>> proceedToPaymentAction,
             Runnable openHistoryAction) {
-        this.returnToMainAction = returnToMainAction;
+        this.ui = ui;
         this.proceedToPaymentAction = proceedToPaymentAction;
         this.openHistoryAction = openHistoryAction;
         this.tempSelectedSeats = new ArrayList<>();
     }
 
-    /**
-     * MainController로부터 제어권을 넘겨받아 좌석 선택 프로세스를 시작하는 진입점 메서드입니다.
-     * Java Swing 기반의 SeatView 창을 띄우고 제어 로직(리스너)을 바인딩합니다.
-     * * @param movie 사용자가 선택한 영화 객체
-     * 
-     * @param showInfo 사용자가 선택한 상영 정보 객체
-     */
-    public void startSeatSelection(Movie movie, ShowInfo showInfo) {
-        this.currentMovie = movie;
-        this.currentShowInfo = showInfo;
-        this.tempSelectedSeats.clear(); // 새로운 트랜잭션을 위해 기존 선택 내역 초기화
+    // 사용자가 선택한 상영 정보를 바탕으로 SeatManager와 SeatView를 새롭게 구성하고 좌석 선택 프로세스 화면을 사용자에게 띄움
+    public void startSeatSelection(ShowInfo showInfo) {
+        this.seatManager = new SeatManager(showInfo);
+        this.tempSelectedSeats.clear();
 
-        System.out.println("\n[시스템] " + currentMovie.getTitle() + " 좌석 선택 세션을 시작합니다.");
-
-        // Java Swing GUI 뷰 객체 인스턴스 생성 및 의존성 연결
-        this.seatView = new SeatView(this.currentShowInfo);
-        this.seatView.setListener(this); // 중요: View에 Controller 자신(this)을 리스너로 등록
-        this.seatView.setVisible(true); // Swing 윈도우 창을 화면에 표시
-
-        // 디버깅 및 무결성 검증을 위한 콘솔 시각화 레이아웃 출력 병행
-        displaySeatLayout();
+        this.seatView = new SeatView(showInfo);
+        this.seatView.setListener(this);
+        this.seatView.setVisible(true);
     }
 
-    /**
-     * 현재 상영관(Theater)의 2D 좌석 배열(Seat[][]) 상태를 가져와
-     * 콘솔 화면에 동기화된 가시적 배치도로 시각화 출력하는 메서드입니다.
-     */
-    private void displaySeatLayout() {
-        System.out.println("\n===== SCREEN =====");
-
-        Seat[][] seats = currentShowInfo.getTheater().getSeats();
-        int rows = currentShowInfo.getTheater().getRows();
-        int cols = currentShowInfo.getTheater().getCols();
-
-        for (int i = 0; i < rows; i++) {
-            char rowChar = (char) ('A' + i);
-            System.out.print(rowChar + " ");
-            for (int j = 0; j < cols; j++) {
-                Seat seat = seats[i][j];
-                if (seat.isReserved()) {
-                    System.out.print("[XX] "); // 이미 선점되어 예매 불가한 좌석 표시
-                } else {
-                    System.out.print("[" + seat.getSeatId() + "] "); // 선택 가능한 활성 좌석 표시
-                }
-            }
-            System.out.println();
-        }
-        System.out.println("==================");
-    }
-
-    /**
-     * 사용자가 선택한 좌석 이름(예: "A1")을 도메인 모델 내에서 찾아 유효성을 검증하고,
-     * 이상이 없을 시 컨트롤러의 임시 선택 목록에 안전하게 추가하는 도메인 제어 메서드입니다.
-     * * @param seatName 사용자가 입력하거나 GUI에서 전달한 좌석 명칭
-     * 
-     * @return 선택 성공 여부 (true: 성공, false: 중복 또는 예매 불가 상태 발견)
-     */
+    // 동기화 블록(synchronized)을 활용해 동시성 문제를 방지하며 특정 좌석의 존재 유무 및 예매 여부를 검증하고, 문제가 없으면 임시
+    // 선택 목록에 좌석을 등록
     public boolean selectSeat(String seatName) {
-        Seat[][] seats = currentShowInfo.getTheater().getSeats();
-        int rows = currentShowInfo.getTheater().getRows();
-        int cols = currentShowInfo.getTheater().getCols();
+        synchronized (seatManager.getShowInfo()) {
+            Seat seat = seatManager.findSeat(seatName);
 
-        // 도메인 내부 2차원 배열을 순회하며 매핑되는 Seat 인스턴스 탐색
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                Seat seat = seats[i][j];
-                if (seat.getSeatId().equals(seatName)) {
-                    // 방어적 코드: 도메인 모델 내부의 무결성 상태값 최종 검증
-                    if (seat.isReserved()) {
-                        System.out.println("[오류] 이미 다른 사용자에 의해 예매된 좌석입니다: " + seatName);
-                        return false;
-                    }
-                    // 멱등성 검증: 임시 리스트에 동일 객체가 중복 저장되는 것을 사전에 방지
-                    if (tempSelectedSeats.contains(seat)) {
-                        System.out.println("[오류] 현재 세션에서 이미 선택하신 좌석입니다: " + seatName);
-                        return false;
-                    }
-
-                    tempSelectedSeats.add(seat);
-                    System.out.println("[시스템] 좌석 " + seatName + "이(가) 성공적으로 검증되어 임시 할당되었습니다.");
-                    return true;
-                }
+            if (seat == null) {
+                ui.showErrorMessage("존재하지 않는 좌석입니다: " + seatName, "오류");
+                return false;
             }
-        }
+            if (seat.isReserved()) {
+                ui.showWarningMessage("이미 다른 사용자에 의해 예매된 좌석입니다: " + seatName, "예매 불가");
+                return false;
+            }
+            if (tempSelectedSeats.contains(seat)) {
+                ui.showInfoMessage("현재 세션에서 이미 선택하신 좌석입니다: " + seatName, "안내");
+                return false;
+            }
 
-        System.out.println("[오류] 상영관 구조 정보에 존재하지 않는 좌석 명칭입니다: " + seatName);
-        return false;
+            tempSelectedSeats.add(seat);
+            return true;
+        }
     }
 
-    /**
-     * 사용자가 모든 좌석 지정을 완료하고 '다음 단계' 결제 승인 프로세스로 이관을 요청할 때
-     * 실행되는 최종 확정 메서드입니다.
-     */
+    // 최소 하나 이상의 좌석이 선택되었는지 검사한 후, 초기화 시 등록된 콜백(proceedToPaymentAction)을 호출하여 선택된 좌석
+    // 정보와 함께 결제 프로세스로 전환
     public void confirmSeatSelection() {
         if (tempSelectedSeats.isEmpty()) {
-            System.out.println("[오류] 최소 한 개 이상의 좌석을 선택하셔야 결제 단계로 진행 가능합니다.");
+            ui.showInfoMessage("최소 한 개 이상의 좌석을 선택하셔야 합니다.", "안내");
             return;
         }
-
-        System.out.println("[시스템] 좌석 무결성 검증 통과 완료. 결제 및 예매 확정 단계로 제어권을 위임합니다.");
-
-        // ✅ 직접 만들지 않고, 주입받은 콜백을 통해 상영 정보와 좌석 리스트를 MainController로 안전하게 토스!
         if (this.proceedToPaymentAction != null) {
-            this.proceedToPaymentAction.accept(this.currentShowInfo, this.tempSelectedSeats);
+            this.proceedToPaymentAction.accept(this.seatManager.getShowInfo(), List.copyOf(this.tempSelectedSeats));
         }
-
         if (this.seatView != null) {
             this.seatView.setVisible(false);
             this.seatView.dispose();
         }
     }
 
-    /**
-     * 사용자가 예매 내역 조회 화면으로 이동하거나 창을 이탈하는 경우,
-     * 컨트롤러 상태값들을 안전하게 초기화(Clean-up)하고 메인 화면으로 돌아가는 복귀 제어 메서드입니다.
-     */
-    public void cancelAndGoBack() {
-        this.currentMovie = null;
-        this.currentShowInfo = null;
-        this.tempSelectedSeats.clear(); // 임시 선택 내역 청소 (메모리 릭 방지)
-
-        if (this.seatView != null) {
-            this.seatView.setVisible(false);
-            this.seatView.dispose(); // Swing 리소스 완전 해제
-        }
-
-        System.out.println("[시스템] 좌석 선택 세션이 완전히 취소되었습니다. 메인 대시보드로 복귀합니다.");
-
-        // [수정됨] 주입받은 MainController를 통해 메인 화면으로 복귀합니다!
-        if (this.returnToMainAction != null) {
-            this.returnToMainAction.run();
-        }
-    }
-
-    /**
-     * [SeatViewListener 상속 구현]
-     * SeatView 내부의 다음 단계 JButton 컴포넌트 클릭 이벤트 발생 시 호출되는 스윙 연동 콜백 메서드입니다.
-     * 뷰에서 전달한 문자열 좌석 정보들을 실제 도메인 모델 데이터로 정밀 변환 및 유효성을 실시간 검토합니다.
-     */
+    // 사용자가 '다음(Next)' 버튼을 클릭했을 때 선택된 좌석 목록 전체에 대해 동시 선점 여부 등을 2차 검증하고, 검증 실패 시 에러
+    // 메시지 출력 후 초기화
     @Override
     public void onNextButtonClicked(List<String> selectedSeats) {
-        this.tempSelectedSeats.clear(); // 재검증을 위한 기존 리스트 초기화
-
-        // 1. 실패한 좌석들을 모아둘 리스트 생성
+        this.tempSelectedSeats.clear();
         List<String> failedSeats = new ArrayList<>();
 
         for (String seatName : selectedSeats) {
-            // 2. break 없이 모든 좌석을 끝까지 검사
             if (!selectSeat(seatName)) {
-                failedSeats.add(seatName); // 검증 실패 시 리스트에 좌석 이름 추가
+                failedSeats.add(seatName);
             }
         }
 
-        // 3. 실패한 좌석이 비어있다면(=모두 성공했다면) 결제 진행
         if (failedSeats.isEmpty()) {
             confirmSeatSelection();
         } else {
-            // 4. 실패한 좌석이 하나라도 있다면 모아서 한 번에 출력 (UX 개선)
             String failedListStr = String.join(", ", failedSeats);
-            System.out.println("[오류] 다음 좌석은 예매가 불가능합니다: [" + failedListStr + "]");
-            System.out.println("[시스템] 좌석을 다시 선택해 주세요.");
-
-            this.tempSelectedSeats.clear(); // 불완전한 상태 전이 차단을 위해 전체 초기화
+            ui.showErrorMessage("다음 좌석은 동시 선점되어 예매가 불가능합니다:\n[" + failedListStr + "]\n다시 선택해 주세요.", "동기화 충돌");
+            this.tempSelectedSeats.clear();
         }
     }
 
-    /**
-     * [SeatViewListener 상속 구현]
-     * SeatView 우측 상단의 '예매내역 조회' 버튼 컴포넌트가 클릭되었을 때 자동으로 가로채어
-     * 컨트롤러의 취소 및 뒤로 가기 프로세스로 즉시 라우팅하는 스윙 연동 콜백 메서드입니다.
-     */
+    // 좌석 선택 중 사용자가 '내역 보기'를 클릭했을 때 현재 작업 중인 뷰를 닫고 임시 데이터를 정리한 후, 등록된
+    // 콜백(openHistoryAction)을 통해 내역 화면으로 복귀
     @Override
     public void onHistoryButtonClicked() {
-        // 1. 좌석 선택 세션의 상태 초기화 및 현재 창 닫기 (메모리 누수 방지)
-        this.currentMovie = null;
-        this.currentShowInfo = null;
+        this.seatManager = null;
         this.tempSelectedSeats.clear();
         if (this.seatView != null) {
             this.seatView.setVisible(false);
             this.seatView.dispose();
         }
-
-        // 2. 주입받은 콜백을 통해 MainController의 openHistoryView() 호출
         if (this.openHistoryAction != null) {
             this.openHistoryAction.run();
         }
